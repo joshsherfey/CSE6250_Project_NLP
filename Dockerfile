@@ -28,20 +28,6 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     ln -sf /bin/{false,systemctl}
 
 
-# 0 SSH
-
-# SSH service start
-RUN ssh-keygen -A ; \
-    mkdir -p /var/run/sshd ; \
-    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd ; \
-    sed 's@#UseDNS yes@UseDNS no@g' -i /etc/ssh/sshd_config # prevent stucks here >> SSH2_MSG_SERVICE_ACCEPT received
-# SSH service end
-
-
-ADD config/ssh /root/.ssh
-RUN chown -R root:root /root/.ssh ; \
-    chmod 0700 /root/.ssh ; \
-    chmod 0600 /root/.ssh/{id_rsa,id_rsa.pub,authorized_keys}
 
 
 EXPOSE 22
