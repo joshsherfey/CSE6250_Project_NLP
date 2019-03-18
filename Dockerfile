@@ -81,7 +81,9 @@ COPY config/hive /etc/hive/conf/
 COPY config/spark /etc/spark/conf/
 COPY config/zookeeper /etc/zookeeper/conf/
 
-
+# 6. Execute initialization script
+RUN chmod +x /script/init.sh
+    /scripts/init.sh
 
 # 7. Install Miniconda Python
 RUN wget --progress=dot:mega https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
