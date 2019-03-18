@@ -54,7 +54,38 @@ RUN wget --progress=dot:mega https://github.com/sbt/sbt/releases/download/v${SBT
 # 3. Clone Materials to /bigdata-bootcamp
 RUN git clone https://bitbucket.org/realsunlab/bigdata-bootcamp.git /bigdata-bootcamp
 
+# 4. Add Extra Basic scripts
+RUN git clone https://github.com/sunlabga/bigbox-scripts.git /scripts
 
+# 5. Overide local scripts and configs
+COPY scripts /scripts/
+
+# copy config/hadoop/* => 
+COPY config/hadoop /etc/hadoop/conf/
+COPY config/hbase /etc/hbase/conf/
+COPY config/hive /etc/hive/conf/
+COPY config/spark /etc/spark/conf/
+COPY config/zookeeper /etc/zookeeper/conf/
+
+
+# 6. Execute initialization script
+RUN /scripts/init.sh
+
+# 7. Install Miniconda Python
+RUN wget --progress=dot:mega https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
+      chmod +x miniconda.sh && ./miniconda.sh -b -p /usr/local/conda3 && \
+      rm -f miniconda.sh
+ENV PATH /usr/local/conda3/bin:$PATH
+RUN echo 'export PATH=/usr/local/conda3/bin:$PATH' >> /etc/profile.d/bigbox.sh
+RUN conda install --yes numpy ipython
+RUN pip install --no-cache-dir asciinema
+
+
+# N. tini
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 EXPOSE 22
 # CMD ["/usr/sbin/sshd", "-D"]
