@@ -27,6 +27,14 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
     mv -f /bin/systemctl{,.orig} ; \
     ln -sf /bin/{false,systemctl}
 
+# 0 SSH
+
+# SSH service start
+RUN ssh-keygen -A ; \
+    mkdir -p /var/run/sshd ; \
+    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd ; \
+    sed 's@#UseDNS yes@UseDNS no@g' -i /etc/ssh/sshd_config # prevent stucks here >> SSH2_MSG_SERVICE_ACCEPT received
+
 # 1 Hadoop, Spark, .... from bigtop
 RUN yum install zookeeper-server hadoop-yarn-proxyserver \
     hadoop-hdfs-namenode hadoop-hdfs-datanode \
@@ -68,8 +76,6 @@ COPY config/spark /etc/spark/conf/
 COPY config/zookeeper /etc/zookeeper/conf/
 
 
-# 6. Execute initialization script
-RUN /scripts/init.sh
 
 # 7. Install Miniconda Python
 RUN wget --progress=dot:mega https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
