@@ -57,6 +57,20 @@ RUN git clone https://bitbucket.org/realsunlab/bigdata-bootcamp.git /bigdata-boo
 # 4. Add Extra Basic scripts
 RUN git clone https://github.com/sunlabga/bigbox-scripts.git /scripts
 
+# 5. Overide local scripts and configs
+COPY scripts /scripts/
+
+# copy config/hadoop/* =>
+COPY config/hadoop /etc/hadoop/conf/
+COPY config/hbase /etc/hbase/conf/
+COPY config/hive /etc/hive/conf/
+COPY config/spark /etc/spark/conf/
+COPY config/zookeeper /etc/zookeeper/conf/
+
+
+# 6. Execute initialization script
+RUN /scripts/init.sh
+
 # 7. Install Miniconda Python
 RUN wget --progress=dot:mega https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
       chmod +x miniconda.sh && ./miniconda.sh -b -p /usr/local/conda3 && \
