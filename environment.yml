@@ -432,9 +432,8 @@ dependencies:
   - pydot-ng==1.0.0
   - smart-open==1.5.1
   - tables==3.3.0
-  - tensorflow==1.11.0
-  - tensorflow-gpu==1.12.0
-  - theano==1.0.4
-  - toree==0.3.0
+  - tensorflow
+  - tensorflow-gpu
+  - theano
+  - toree
 prefix: !!python/unicode '/home/docker-user/anaconda2/envs/cse6250'
-
