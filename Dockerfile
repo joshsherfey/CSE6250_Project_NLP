@@ -81,6 +81,10 @@ COPY config/hive /etc/hive/conf/
 COPY config/spark /etc/spark/conf/
 COPY config/zookeeper /etc/zookeeper/conf/
 
+#6. 
+RUN chmod +x /scripts/init.sh; \
+    /scripts/init.sh
+
 # 7. Install Miniconda Python
 RUN wget --progress=dot:mega https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh && \
       chmod +x miniconda.sh && ./miniconda.sh -b -p /usr/local/conda3 && \
@@ -90,12 +94,12 @@ RUN echo 'export PATH=/usr/local/conda3/bin:$PATH' >> /etc/profile.d/bigbox.sh
 RUN conda install --yes numpy ipython
 RUN pip install --no-cache-dir asciinema
 
-FROM continuumio/miniconda3
-ADD environment.yml /tmp/environment.yml
-RUN conda env create -f /tmp/environment.yml
+#FROM continuumio/miniconda3
+#ADD environment.yml /tmp/environment.yml
+#RUN conda env create -f /tmp/environment.yml
 # Pull the environment name out of the environment.yml
-RUN echo "source activate $(head -1 /tmp/environment.yml | cut -d' ' -f2)" > ~/.bashrc
-ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yml | cut -d' ' -f2)/bin:$PATH
+#RUN echo "source activate $(head -1 /tmp/environment.yml | cut -d' ' -f2)" > ~/.bashrc
+#ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yml | cut -d' ' -f2)/bin:$PATH
 
 # N. tini
 ENV TINI_VERSION v0.18.0
