@@ -94,12 +94,12 @@ RUN echo 'export PATH=/usr/local/conda3/bin:$PATH' >> /etc/profile.d/bigbox.sh
 RUN conda install --yes numpy ipython
 RUN pip install --no-cache-dir asciinema
 
-#FROM continuumio/miniconda3
-#ADD environment.yml /tmp/environment.yml
-#RUN conda env create -f /tmp/environment.yml
+FROM continuumio/miniconda3
+ADD environment.yml /tmp/environment.yml
+RUN conda env create -f /tmp/environment.yml
 # Pull the environment name out of the environment.yml
-#RUN echo "source activate $(head -1 /tmp/environment.yml | cut -d' ' -f2)" > ~/.bashrc
-#ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yml | cut -d' ' -f2)/bin:$PATH
+RUN echo "source activate $(head -1 /tmp/environment.yml | cut -d' ' -f2)" > ~/.bashrc
+ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yml | cut -d' ' -f2)/bin:$PATH
 
 # N. tini
 ENV TINI_VERSION v0.18.0
